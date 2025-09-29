@@ -1,7 +1,10 @@
 <template>
 	<view class="page-view">
 		<view class="user-info-view">
-			<s-image class="user-avatar" mode="aspectFill" :src="userInfo.headImg||avatarUrl"></s-image>
+			<view class="user-avatar">
+				<text class="avatar-text" v-if="isLogin">{{userInfo.name?userInfo.name.charAt(0):'U'}}</text>
+				<text class="avatar-text" v-else>U</text>
+			</view>
 			<text class="user-name" v-if="isLogin">{{userInfo.name}}</text>
 			<text class="user-name" @click="toLogin" v-if="!isLogin">点击登录</text>
 		</view>
@@ -53,7 +56,6 @@
 </template>
 
 <script>
-	import sImage from "@/components/sImage/sImage.vue"
 	import {
 		mapState,
 		mapMutations,
@@ -62,7 +64,6 @@
 	export default {
 		data() {
 			return {
-				avatarUrl: 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png',
 				infoPopupShow: false,
 				userInfoData: {
 					name: "",
@@ -71,7 +72,6 @@
 			}
 		},
 		components: {
-			sImage
 		},
 		computed: {
 			...mapState(['isLogin', 'userInfo']),
@@ -264,11 +264,21 @@
 			align-items: center;
 			// border-radius: 0 0 40rpx 40rpx;
 
+			.avatar-text {
+				color: #fff;
+				font-size: 80rpx;
+				font-weight: bold;
+			}
+
 			.user-avatar {
 				width: 160rpx;
 				height: 160rpx;
 				border-radius: 50%;
 				border: 4rpx solid #fff;
+				background-color: rgba(255, 255, 255, 0.2);
+				display: flex;
+				align-items: center;
+				justify-content: center;
 			}
 
 			.user-name {

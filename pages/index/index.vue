@@ -139,7 +139,50 @@
 				}).catch((error) => {
 					console.error("获取房屋列表失败:", error);
 
-					// 临时解决方案：显示模拟数据用于测试前端功能
+					// 检查是否是图片相关的错误，如果是则忽略图片字段
+					if (error.errMsg && error.errMsg.includes("Unexpected token '/'") && error.errMsg.includes("images")) {
+						console.log("检测到图片路径格式错误，尝试清理数据中的图片字段");
+
+						// 尝试从错误响应中提取有效数据
+						try {
+							if (error.data && typeof error.data === 'string') {
+								// 尝试修复JSON格式
+								const fixedJson = error.data.replace(/"([^"]*\/images\/[^"]*)"/g, function(match, imagePath) {
+									// 清理图片路径中的多余空格
+									const cleanedPath = imagePath.replace(/\s*\/\s*/g, '/').trim();
+									return `"${cleanedPath}"`;
+								});
+
+								const parsedData = JSON.parse(fixedJson);
+
+								// 清理所有图片字段
+								const cleanedData = parsedData.data ? parsedData.data.map(item => ({
+									...item,
+									firstHeadImg: null,
+									headImg: []
+								})) : [];
+
+								this.list = this.list.map(item => {
+									if (item.pid === parentId) {
+										item.houseList = cleanedData || []
+									}
+									return item
+								});
+
+								uni.showToast({
+									title: "数据已加载（忽略图片错误）",
+									icon: "none",
+									duration: 2000
+								});
+
+								return;
+							}
+						} catch (e) {
+							console.log("自动修复失败，使用模拟数据");
+						}
+					}
+
+					// 如果无法修复，使用模拟数据
 					console.log("使用模拟数据用于测试");
 					const mockData = [
 						{
