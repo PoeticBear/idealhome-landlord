@@ -1,6 +1,10 @@
 <template>
 	<view class="page-view">
-		<u--form :labelWidth='80' labelPosition="left" labelAlign="right" :model="formData" ref="formRef">
+		<view class="demo-notice">
+			<u-icon name="info-circle" color="#ff9900" size="28"></u-icon>
+			<text class="notice-text">为了方便演示，表单中显示了默认内容</text>
+		</view>
+		<u--form :labelWidth='80' labelPosition="left" labelAlign="left" :model="formData" ref="formRef">
 			<u-form-item label="名称：" prop="name" borderBottom>
 				<u--input :disabled="pageType===3" border="none" v-model="formData.name" placeholder="请输入" :maxlength="20">
 				</u--input>
@@ -118,9 +122,9 @@
 					<u-radio label="无" :name="0"></u-radio>
 				</u-radio-group>
 			</u-form-item>
-			<u-form-item label="地址：" prop="provinceName" borderBottom @click="showAddressPicker=true">
-				<cityPicker :disabled="pageType===3" :defaultCity="defaultCity" @change="addresChange">
-				</cityPicker>
+			<u-form-item label="地址：" prop="provinceName" borderBottom class="address-item">
+				<u--input :disabled="pageType===3" placeholder="请输入地址" v-model="formData.provinceName" :maxlength="50">
+				</u--input>
 			</u-form-item>
 			<u-form-item label="详情地址：" prop="addresInfo" borderBottom>
 				<u--input :disabled="pageType===3" placeholder="请输入" v-model="formData.addresInfo" :maxlength="20">
@@ -132,8 +136,6 @@
 			</u-form-item>
 		</u--form>
 		<view class="btn-view">
-			<u-button v-if="pageType!==3" :type="formData.rentalMarket?'error':'success'"
-				:text="formData.rentalMarket?'下架':'发布'" @click="release"></u-button>
 			<u-button type="primary" :text="pageType===3?'返回':'确定'" @click="save"></u-button>
 		</view>
 	</view>
@@ -145,32 +147,32 @@
 		data() {
 			return {
 				formData: {
-					name: "",
-					provinceId: "",
-					provinceName: "",
-					cityId: "",
-					cityName: "",
-					areaId: "",
-					areaName: "",
-					addresInfo: "",
-					area: "",
-					price: "",
-					fakePrice: "",
-					longitude: "",
-					latitude: "",
+					name: "阳光花园三室两厅",
+					provinceId: "110000",
+					provinceName: "广东省深圳市福田区沙嘴村",
+					cityId: "440300",
+					cityName: "深圳市",
+					areaId: "440304",
+					areaName: "福田区",
+					addresInfo: "沙嘴村50栋102室",
+					area: "120",
+					price: "4500",
+					fakePrice: "5000",
+					longitude: "116.480717",
+					latitude: "39.918429",
 					depositNumber: 1,
-					floor: 1,
-					priceNumber: 1,
+					floor: 15,
+					priceNumber: 3,
 					toward: 3,
 					toilet: 1,
 					kitchen: 1,
 					balcony: 1,
-					waterFee: '',
-					electricityFee: '',
-					internetFee: '',
-					fuelFee: '',
+					waterFee: '5',
+					electricityFee: '1.2',
+					internetFee: '100',
+					fuelFee: '0',
 					headImg: [],
-					note: "",
+					note: "精装修，家具家电齐全，交通便利，周边生活设施完善",
 					parentId: 0
 				},
 				pageType: 0,
@@ -622,29 +624,320 @@
 
 <style scoped lang="scss">
 	.page-view {
-		padding: 0 30rpx 50rpx;
+		padding: 20rpx 30rpx 60rpx;
+		background-color: #f8f9fa;
+		min-height: 100vh;
+
+		.demo-notice {
+			display: flex;
+			align-items: center;
+			background-color: #fff7e6;
+			border: 2rpx solid #ffd591;
+			border-radius: 12rpx;
+			padding: 20rpx 24rpx;
+			margin-bottom: 24rpx;
+			box-shadow: 0 2rpx 8rpx rgba(255, 152, 0, 0.1);
+
+			.notice-text {
+				margin-left: 12rpx;
+				font-size: 26rpx;
+				color: #ff9900;
+				font-weight: 500;
+			}
+		}
 
 		.flex-item-view {
 			margin-top: 20rpx;
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
+			gap: 20rpx;
+		}
+
+		::v-deep .u-form-item {
+			margin-bottom: 24rpx;
+			padding: 24rpx 20rpx;
+			background-color: #ffffff;
+			border-radius: 12rpx;
+			box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+			transition: box-shadow 0.3s ease;
+
+			&:first-child {
+				margin-top: 0;
+			}
+
+			&__body {
+				padding: 0;
+			}
+
+			&__body__left {
+				margin-right: 24rpx;
+			}
+
+			&__body__right {
+				flex: 1;
+			}
+
+			&__body__left__content {
+				min-width: 140rpx;
+				color: #303133;
+				font-size: 28rpx;
+				font-weight: 500;
+				text-align: left !important;
+				justify-content: flex-start !important;
+			}
+
+			&__message {
+				margin-top: 8rpx;
+				font-size: 24rpx;
+			}
 		}
 
 		::v-deep .u-radio {
 			margin-right: 30rpx;
+
+			&__label {
+				font-size: 28rpx;
+				color: #303133;
+			}
+
+			&__icon {
+				font-size: 32rpx;
+			}
+
+			&--disabled {
+				opacity: 0.5;
+			}
+		}
+
+		::v-deep .u-input {
+			background-color: #f8f9fa;
+			border-radius: 8rpx;
+			padding: 16rpx 20rpx;
+			border: 2rpx solid transparent;
+			transition: all 0.3s ease;
+
+			&--disabled {
+				background-color: #f5f5f5;
+				opacity: 0.7;
+			}
+
+			&:focus {
+				border-color: #3c9cff;
+				background-color: #ffffff;
+			}
+
+			&__input {
+				font-size: 28rpx;
+				color: #303133;
+			}
+
+			&__placeholder {
+				font-size: 28rpx;
+				color: #909193;
+			}
+		}
+
+		::v-deep .u-textarea {
+			background-color: #f8f9fa;
+			border-radius: 8rpx;
+			padding: 16rpx 20rpx;
+			border: 2rpx solid transparent;
+			transition: all 0.3s ease;
+
+			&--disabled {
+				background-color: #f5f5f5;
+				opacity: 0.7;
+			}
+
+			&:focus {
+				border-color: #3c9cff;
+				background-color: #ffffff;
+			}
+
+			&__count {
+				font-size: 24rpx;
+				color: #909193;
+			}
 		}
 	}
 
 	.btn-view {
-		margin-top: 20rpx;
+		margin-top: 40rpx;
 		display: flex;
-		border-radius: 40rpx;
-		overflow: hidden;
+		gap: 20rpx;
+		padding: 20rpx;
+		background-color: #ffffff;
+		border-radius: 12rpx;
+		box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
 
 		::v-deep .u-button {
+			flex: 1;
+			height: 88rpx;
+			border-radius: 44rpx;
+			font-size: 32rpx;
+			font-weight: 500;
 			border: none;
-			border-radius: 0;
+			transition: all 0.3s ease;
+
+			&:active {
+				transform: scale(0.98);
+			}
+
+			&--primary {
+				background: linear-gradient(135deg, #3c9cff 0%, #398ade 100%);
+				box-shadow: 0 4rpx 12rpx rgba(60, 156, 255, 0.3);
+			}
+
+			&--success {
+				background: linear-gradient(135deg, #5ac725 0%, #53c21d 100%);
+				box-shadow: 0 4rpx 12rpx rgba(90, 199, 37, 0.3);
+			}
+
+			&--error {
+				background: linear-gradient(135deg, #f56c6c 0%, #e45656 100%);
+				box-shadow: 0 4rpx 12rpx rgba(245, 108, 108, 0.3);
+			}
+
+			&--warning {
+				background: linear-gradient(135deg, #f9ae3d 0%, #f1a532 100%);
+				box-shadow: 0 4rpx 12rpx rgba(249, 174, 61, 0.3);
+			}
+		}
+	}
+
+	.df {
+		display: flex;
+		gap: 16rpx;
+		flex-wrap: wrap;
+		align-items: center;
+
+		::v-deep .u-tag {
+			margin: 0;
+			padding: 8rpx 16rpx;
+			border-radius: 6rpx;
+			font-size: 26rpx;
+			font-weight: 500;
+		}
+	}
+
+	// 优化上传组件样式
+	::v-deep .u-upload {
+		&__wrap {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 16rpx;
+		}
+
+		&__preview {
+			border-radius: 8rpx;
+			overflow: hidden;
+			box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+		}
+
+		&__button {
+			background-color: #f8f9fa;
+			border: 2rpx dashed #dadbde;
+			border-radius: 8rpx;
+			transition: all 0.3s ease;
+
+			&:hover {
+				background-color: #f0f2f5;
+				border-color: #3c9cff;
+			}
+		}
+	}
+
+	// 优化文本组件样式
+	::v-deep .u-text {
+		font-size: 24rpx;
+		color: #909193;
+	}
+
+	// 修复地址字段高度问题
+	::v-deep .u-form-item.address-item {
+		.u-form-item__body {
+			min-height: 60rpx;
+			height: 60rpx;
+			align-items: center;
+		}
+	}
+
+	// 城市选择器组件样式优化
+	::v-deep .cityPicker {
+		width: 100%;
+		height: 80rpx;
+		line-height: 80rpx;
+		display: flex;
+		align-items: center;
+		background-color: #f8f9fa;
+		border-radius: 8rpx;
+		padding: 0 20rpx;
+		border: 2rpx solid transparent;
+		transition: all 0.3s ease;
+
+		&:focus {
+			border-color: #3c9cff;
+			background-color: #ffffff;
+		}
+
+		&--disabled {
+			background-color: #f5f5f5;
+			opacity: 0.7;
+		}
+	}
+
+	// 响应式设计优化
+	@media screen and (max-width: 750rpx) {
+		.page-view {
+			padding: 16rpx 20rpx 40rpx;
+		}
+
+		::v-deep .u-form-item {
+			padding: 20rpx 16rpx;
+		}
+
+		.btn-view {
+			padding: 16rpx;
+			gap: 16rpx;
+
+			::v-deep .u-button {
+				height: 80rpx;
+				font-size: 30rpx;
+			}
+		}
+
+		.flex-item-view {
+			gap: 16rpx;
+		}
+	}
+
+	// 平板端适配
+	@media screen and (min-width: 751rpx) and (max-width: 1024rpx) {
+		.page-view {
+			max-width: 900rpx;
+			margin: 0 auto;
+		}
+	}
+
+	// 优化滚动体验
+	.page-view {
+		scroll-behavior: smooth;
+	}
+
+	// 添加页面加载动画
+	.page-view {
+		animation: fadeIn 0.3s ease-in-out;
+	}
+
+	@keyframes fadeIn {
+		from {
+			opacity: 0;
+			transform: translateY(20rpx);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
 		}
 	}
 </style>
