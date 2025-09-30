@@ -10,7 +10,12 @@
 		onLaunch: function() {
 			const token = uni.getStorageSync("token")
 			if (token) {
-				this.getUserInfo(true)
+				this.getUserInfo(true).catch(() => {
+					// If getUserInfo fails, clear the invalid token and reset login state
+					uni.removeStorageSync("token")
+					this.setLogin(false)
+					this.setUserInfo({})
+				})
 			}
 		},
 		onShow: function() {
@@ -42,7 +47,8 @@
 		},
 		onHide: function() {},
 		methods: {
-			...mapActions(['getUserInfo'])
+			...mapActions(['getUserInfo']),
+			...mapMutations(['setLogin', 'setUserInfo'])
 		}
 	}
 </script>

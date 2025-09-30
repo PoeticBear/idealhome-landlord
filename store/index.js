@@ -29,7 +29,7 @@ const store = new Vuex.Store({
 		getUserInfo({
 			commit
 		}, appStart) {
-			http.request({
+			return http.request({
 				url: '/api/landlordUser/selectById',
 				method: 'get',
 			}).then(res => {
@@ -61,11 +61,16 @@ const store = new Vuex.Store({
 							pages[0].onShow()
 						}
 					}
+					return res;
 				} else {
 					commit("setLogin", false);
+					commit("setUserInfo", {});
+					throw new Error('Invalid user status');
 				}
-			}).catch(() => {
+			}).catch((error) => {
 				commit("setLogin", false);
+				commit("setUserInfo", {});
+				throw error;
 			})
 		},
 	}
